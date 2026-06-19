@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#000000"/>
+  <title>Para ella ✦</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --rosa: #FF2D6A;
+      --dorado: #FFD166;
+      --blanco: #FFFFFF;
+      --negro: #030303;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--negro);
+      color: var(--blanco);
+      font-family: 'Lato', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── INTRO ── */
+    #intro {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+    }
+    #intro.fade-out {
+      animation: introOut 1.4s ease forwards;
+    }
+    @keyframes introOut {
+      0%   { opacity: 1; transform: scale(1); }
+      60%  { opacity: 0.2; transform: scale(1.04); }
+      100% { opacity: 0; transform: scale(1.08); pointer-events: none; }
+    }
+    #eyeCanvas { position:absolute; inset:0; width:100%; height:100%; }
+    #intro-words {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      pointer-events: none;
+      padding: 0 2rem;
+    }
+    #intro-words p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.18);
+      margin-bottom: 2.5rem;
+      animation: wordIn 2.5s ease forwards;
+    }
+    #tap-hint {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,45,106,0.75);
+      animation: tapPulse 2s ease-in-out infinite 3s both;
+    }
+    @keyframes wordIn  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+    @keyframes tapPulse { 0%,100%{opacity:0.35} 50%{opacity:1} }
+
+    /* ── MAIN ── */
+    #main { opacity:0; transition: opacity 1.4s ease; }
+    #main.show { opacity:1; }
+
+    /* scroll progress */
+    #bar {
+      position:fixed; top:0; left:0; height:2px;
+      background: linear-gradient(90deg, var(--rosa), var(--dorado));
+      z-index:99; transition: width 0.1s linear;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 5rem 1.5rem 3rem;
+      text-align: center;
+    }
+    #heroCanvas { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+    .hero-inner { position:relative; z-index:2; }
+    .eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--rosa);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: up 0.9s ease 0.4s forwards;
+    }
+    .hero-t1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: clamp(3.2rem, 18vw, 5.5rem);
+      line-height: 0.95;
+      opacity: 0;
+      animation: up 0.9s ease 0.7s forwards;
+    }
+    .hero-t1 span {
+      display: block;
+      background: linear-gradient(135deg, var(--rosa) 30%, var(--dorado));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      margin-top: 1.4rem;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.8;
+      opacity: 0;
+      animation: up 0.9s ease 1s forwards;
+    }
+    @keyframes up { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
+
+    .heart-float {
+      position: absolute;
+      pointer-events: none;
+      animation: floatH linear infinite;
+      opacity: 0;
+      font-size: 1.2rem;
+    }
+    @keyframes floatH {
+      0%   { transform:translateY(0) rotate(0deg); opacity:0; }
+      8%   { opacity:0.8; }
+      92%  { opacity:0.5; }
+      100% { transform:translateY(-105vh) rotate(15deg); opacity:0; }
+    }
+
+    /* ── DIVIDER ── */
+    .div {
+      width:1px; height:60px;
+      background: linear-gradient(to bottom, transparent, rgba(255,45,106,0.5), transparent);
+      margin: 0 auto;
+    }
+
+    /* ── SECTIONS ── */
+    .sec {
+      padding: 4rem 1.5rem;
+      max-width: 520px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .sec.show { opacity:1; transform:none; }
+    .sec-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--rosa);
+      margin-bottom: 0.8rem;
+    }
+    .sec-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 8vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.4rem;
+    }
+    .sec-title em { font-style:italic; color:var(--dorado); }
+    .sec-body {
+      font-size: 0.98rem;
+      font-weight: 300;
+      line-height: 1.9;
+      color: rgba(255,255,255,0.7);
+    }
+    .sec-body p { margin-bottom: 1rem; }
+    .sec-body strong { color:#fff; font-weight:700; }
+
+    /* ── OJOS SECTION (especial) ── */
+    #eyes-sec {
+      padding: 5rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #eyesMini {
+      display: block;
+      width: 100%;
+      max-width: 340px;
+      margin: 2rem auto;
+      border-radius: 16px;
+      aspect-ratio: 16/7;
+    }
+    .eyes-quote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 5vw, 1.4rem);
+      color: rgba(255,255,255,0.85);
+      line-height: 1.6;
+      max-width: 400px;
+      margin: 0 auto 1.2rem;
+    }
+    .eyes-quote em { color: var(--dorado); font-style: normal; }
+    .eyes-sub {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.1em;
+    }
+    .glow-ring {
+      position:absolute; inset:-40px;
+      border-radius:50%;
+      background: radial-gradient(ellipse at 50% 50%, rgba(255,45,106,0.12) 0%, transparent 65%);
+      pointer-events:none;
+      animation: ringPulse 4s ease-in-out infinite;
+    }
+    @keyframes ringPulse { 0%,100%{opacity:0.4;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)} }
+
+    /* ── RAZONES CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+    .card {
+      border: 1px solid rgba(255,45,106,0.18);
+      border-radius: 14px;
+      padding: 1.2rem 1rem;
+      background: rgba(255,45,106,0.04);
+      transition: border-color 0.3s, background 0.3s, transform 0.25s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card:active {
+      transform: scale(0.97);
+      background: rgba(255,45,106,0.09);
+      border-color: rgba(255,45,106,0.5);
+    }
+    .card-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: rgba(255,45,106,0.2);
+      line-height: 1;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--dorado);
+      margin: 0.3rem 0 0.4rem;
+    }
+    .card-text {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+
+    /* ── GALERÍA ── */
+    #foto-sec {
+      padding: 4rem 0 4rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    #foto-sec .sec-label { margin-bottom: 0.5rem; }
+
+    /* foto favorita */
+    .fav-wrap {
+      padding: 0 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .fav-label {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 1rem;
+    }
+    .fav-label em { color: var(--dorado); font-style: normal; }
+    .fav-frame {
+      position: relative;
+      display: inline-block;
+    }
+    .fav-glow {
+      position:absolute; inset:-14px;
+      border-radius:24px;
+      background: radial-gradient(ellipse, rgba(255,45,106,0.28) 0%, transparent 68%);
+      animation: fglow 3.5s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes fglow { 0%,100%{opacity:0.45;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
+    .fav-box {
+      width: min(260px, 75vw);
+      aspect-ratio: 3/4;
+      border: 1.5px dashed rgba(255,45,106,0.4);
+      border-radius: 18px;
+      background: rgba(255,45,106,0.04);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: border-color 0.3s;
+    }
+    .fav-box.has-photo { border-style: solid; border-color: rgba(255,45,106,0.35); }
+    .fav-box input[type=file] { position:absolute;inset:0;opacity:0;cursor:pointer;z-index:5; }
+    .fav-box img {
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;border-radius:16px;z-index:3;
+    }
+    .fav-icon { font-size:2.2rem; pointer-events:none; z-index:2; }
+    .fav-hint {
+      font-size:0.72rem;
+      color:rgba(255,255,255,0.32);
+      pointer-events:none;z-index:2;
+      line-height:1.5;
+      padding: 0 1rem;
+    }
+    .fav-badge {
+      position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+      background: rgba(255,209,102,0.15);
+      border: 1px solid rgba(255,209,102,0.4);
+      border-radius:20px; padding:4px 14px;
+      font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase;
+      color:var(--dorado); z-index:4; white-space:nowrap;
+      display:none;
+    }
+
+    /* carrusel */
+    .carousel-head {
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .carousel-title {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .carousel-count {
+      font-size: 0.72rem;
+      color: rgba(255,45,106,0.7);
+      letter-spacing:0.1em;
+    }
+    .carousel-outer {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+    .carousel-track {
+      display: flex;
+      gap: 12px;
+      padding: 0 1.5rem;
+      transition: transform 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+    .c-slide {
+      flex: 0 0 min(220px, 62vw);
+      aspect-ratio: 3/4;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,45,106,0.04);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .c-slide.active-slide {
+      transform: scale(1.04);
+      box-shadow: 0 0 28px rgba(255,45,106,0.28);
+    }
+    .c-slide img {
+      width:100%;height:100%;object-fit:cover;display:block;
+      border-radius:14px;
+    }
+    /* slot vacío para agregar */
+    .c-add {
+      flex: 0 0 min(220px, 62vw);
+      aspect-ratio: 3/4;
+      border-radius: 14px;
+      border: 1.5px dashed rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .c-add:active { background: rgba(255,45,106,0.07); border-color: rgba(255,45,106,0.4); }
+    .c-add input[type=file] { position:absolute;inset:0;opacity:0;cursor:pointer;z-index:5; }
+    .c-add-icon { font-size:2rem; pointer-events:none; }
+    .c-add-text { font-size:0.72rem; color:rgba(255,255,255,0.3); pointer-events:none; letter-spacing:0.05em; }
+
+    /* dots */
+    .carousel-dots {
+      display:flex; justify-content:center; gap:6px;
+      margin-top:1.2rem; padding: 0 1.5rem;
+      flex-wrap: wrap;
+    }
+    .cdot {
+      width:5px;height:5px;border-radius:50%;
+      background:rgba(255,255,255,0.2);
+      transition:background 0.3s, transform 0.3s;
+    }
+    .cdot.on { background:var(--rosa); transform:scale(1.4); }
+
+    /* swipe hint */
+    .swipe-hint {
+      margin-top:0.8rem;
+      font-size:0.7rem;
+      color:rgba(255,255,255,0.22);
+      letter-spacing:0.1em;
+      animation: hintFade 3s ease 2s forwards;
+    }
+    @keyframes hintFade { 0%{opacity:1} 100%{opacity:0} }
+
+    /* ── TYPEWRITER QUOTE ── */
+    #quote-sec {
+      padding: 6rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .quote-glow {
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse at center, rgba(255,45,106,0.07) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    #tw-text {
+      position:relative; z-index:2;
+      font-family:'Playfair Display', serif;
+      font-style:italic;
+      font-size: clamp(1.15rem, 5vw, 1.5rem);
+      line-height: 1.6;
+      color:#fff;
+      min-height: 6em;
+    }
+    .tw-cursor {
+      display:inline-block; width:2px; height:1em;
+      background:var(--rosa); vertical-align:text-bottom;
+      animation: blink 0.8s step-end infinite;
+    }
+    @keyframes blink { 50%{opacity:0} }
+    .quote-by {
+      position:relative; z-index:2;
+      margin-top:1.5rem;
+      font-size:0.7rem;
+      letter-spacing:0.4em;
+      text-transform:uppercase;
+      color:var(--rosa);
+    }
+
+    /* ── FINAL ── */
+    #final-sec {
+      padding: 6rem 1.5rem 5rem;
+      text-align: center;
+    }
+    .final-t {
+      font-family:'Playfair Display', serif;
+      font-weight:900;
+      font-size: clamp(3rem, 16vw, 5rem);
+      background: linear-gradient(135deg, var(--rosa), var(--dorado), var(--rosa));
+      background-size: 200% auto;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation: shimmer 4s linear infinite;
+    }
+    @keyframes shimmer { to{background-position:200% center} }
+    .final-heart {
+      display:block;
+      font-size:4.5rem;
+      margin:1.5rem auto;
+      animation: hb 1.5s ease-in-out infinite;
+    }
+    @keyframes hb {
+      0%,100%{transform:scale(1)}
+      14%{transform:scale(1.18)}
+      28%{transform:scale(1)}
+      42%{transform:scale(1.1)}
+    }
+    .final-body {
+      font-size:0.95rem;
+      color:rgba(255,255,255,0.6);
+      line-height:1.9;
+      font-weight:300;
+      max-width:360px;
+      margin:0 auto;
+    }
+    .firma {
+      margin-top:2.5rem;
+      font-family:'Playfair Display', serif;
+      font-style:italic;
+      font-size:1.3rem;
+      color:var(--dorado);
+    }
+  </style>
+</head>
+<body>
+
+<div id="bar" style="width:0%"></div>
+
+<!-- ══ INTRO: OJOS DE PARTÍCULAS ══ -->
+<div id="intro">
+  <canvas id="eyeCanvas"></canvas>
+  <div id="intro-words">
+    <p>ella es mi universo</p>
+    <div id="tap-hint">✦ toca para abrir ✦</div>
+  </div>
+</div>
+
+<!-- ══ CONTENIDO ══ -->
+<div id="main">
+
+  <!-- HERO -->
+  <section id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-inner">
+      <p class="eyebrow">✦ para la persona más importante de mi vida ✦</p>
+      <h1 class="hero-t1">
+        Eres<span>todo.</span>
+      </h1>
+      <p class="hero-sub">
+        Esta página no alcanza para<br/>describir lo que sentís en mí.<br/>Pero es el intento más honesto<br/>que pude hacer.
+      </p>
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- SECCIÓN GENERAL -->
+  <div class="sec" id="s1">
+    <p class="sec-label">✦ Lo que sos para mí</p>
+    <h2 class="sec-title">Desde que <em>apareciste</em>, el mundo cambió.</h2>
+    <div class="sec-body">
+      <p>Hay cosas que no se pueden explicar con palabras comunes. <strong>Vos sos una de esas cosas.</strong> La forma en que reís, cómo hacés que cualquier lugar se sienta como el lugar indicado — eso te convirtió en lo más importante que tengo.</p>
+      <p>No exagero cuando digo que sos espectacular. Lo sos en cada momento que te he visto, en cada versión tuya que tuve el privilegio de conocer.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <!-- OJOS SECTION ESPECIAL -->
+  <div id="eyes-sec" class="sec show" style="opacity:1;transform:none;">
+    <div class="glow-ring"></div>
+    <p class="sec-label">✦ Lo que me enamora cada día ✦</p>
+    <h2 class="sec-title" style="text-align:center;">Tus <em>ojos</em>.</h2>
+    <canvas id="eyesMini"></canvas>
+    <div class="eyes-quote">
+      "La mirada que <em>me das</em> cada día<br/>es única en el universo entero."
+    </div>
+    <p class="eyes-sub">No hay otra mirada que me haga sentir así.</p>
+    <div class="sec-body" style="margin-top:2rem; text-align:left;">
+      <p><strong>Tus ojos me dicen todo</strong> sin pronunciar una sola palabra. Cuando me mirás, el tiempo se detiene. Siento que soy suficiente. Siento que soy tuyo. Siento que todo está bien.</p>
+      <p>Podría perderte la mirada por horas y nunca cansarme. Hay una luz en tus ojos que no existe en ningún otro lugar del mundo — esa luz es la que me despierta cada mañana con ganas de seguir.</p>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <!-- RAZONES -->
+  <div class="sec" id="s2">
+    <p class="sec-label">✦ Razones que son infinitas</p>
+    <h2 class="sec-title">Por esto y por <em>mil cosas más.</em></h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-num">01</div>
+        <div class="card-title">Tu mirada</div>
+        <div class="card-text">Única en el universo. Cálida, profunda, mía.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <div class="card-title">Tu risa</div>
+        <div class="card-text">Genuina y libre. Podría escucharla para siempre.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">03</div>
+        <div class="card-title">Tu fuerza</div>
+        <div class="card-text">Sos más fuerte de lo que imaginás. Te he visto brillar.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">04</div>
+        <div class="card-title">Tu calidez</div>
+        <div class="card-text">Hacés sentir especial a quien te rodea. Es un regalo.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">05</div>
+        <div class="card-title">Quién sos</div>
+        <div class="card-text">La suma perfecta de cómo pensás, sentís y existís.</div>
+      </div>
+      <div class="card">
+        <div class="card-num">06</div>
+        <div class="card-title">Elegirme</div>
+        <div class="card-text">De todo lo que me ha pasado, esto es lo más bonito.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="div"></div>
+
+  <!-- GALERÍA -->
+  <section id="foto-sec">
+    <p class="sec-label" style="text-align:center; margin-bottom:1.2rem;">✦ Nosotros ✦</p>
+
+    <!-- FOTO FAVORITA -->
+    <div class="fav-wrap">
+      <p class="fav-label">¿Cuál es tu <em>foto favorita</em> de nosotros?</p>
+      <div class="fav-frame">
+        <div class="fav-glow"></div>
+        <label class="fav-box" id="favBox">
+          <input type="file" accept="image/*" onchange="loadFav(this)"/>
+          <img id="favImg" alt="Foto favorita"/>
+          <div class="fav-icon" id="favIcon">🌟</div>
+          <div class="fav-hint" id="favHint">Tocá para agregar<br/>tu foto favorita de los dos</div>
+          <div class="fav-badge" id="favBadge">✦ La favorita ✦</div>
+        </label>
+      </div>
+    </div>
+
+    <!-- CARRUSEL — reemplazá cada src con la ruta de tu foto -->
+    <div class="carousel-head">
+      <span class="carousel-title">más momentos nuestros</span>
+      <span class="carousel-count" id="carCount"></span>
+    </div>
+
+    <div class="carousel-outer" id="carOuter">
+      <div class="carousel-track" id="carTrack">
+
+        <div class="c-slide">
+          <img src="./img/606CD8DA-1833-44BA-BBED-5F65D4BB3CAF.jpeg" alt="Nosotros"/>
+        </div>
+
+        <div class="c-slide">
+          <img src="./img/742a89ea-5128-418b-998e-09bc39fcd5e6.jpeg" alt="Nosotros"/>
+        </div>
+
+        <div class="c-slide">
+          <img src="./img/IMG_1500.heic" alt="Nosotros"/>
+        </div>
+
+        <div class="c-slide">
+          <img src="./img/IMG_1715.heic" alt="Nosotros"/>
+        </div>
+
+        <div class="c-slide">
+          <img src="./img/IMG_1929.heic" alt="Nosotros"/>
+        </div>
+
+        <!-- Para agregar más fotos, copiá un bloque <div class="c-slide"> con su <img src="..."/> -->
+
+      </div>
+    </div>
+
+    <div class="carousel-dots" id="carDots"></div>
+    <p class="swipe-hint" id="swipeHint">← deslizá para ver más →</p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- TYPEWRITER -->
+  <section id="quote-sec">
+    <div class="quote-glow"></div>
+    <p id="tw-text"><span class="tw-cursor"></span></p>
+    <p class="quote-by">— Con todo mi amor</p>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- FINAL -->
+  <section id="final-sec" class="sec" id="sf">
+    <h2 class="final-t">Te amo.</h2>
+    <span class="final-heart">❤️</span>
+    <p class="final-body">
+      Gracias por existir, por elegirme,<br/>
+      por ser exactamente quien sos.<br/>
+      Cada día a tu lado es el mejor<br/>día de mi vida.<br/><br/>
+      <strong style="color:#fff">No te imagino ausente</strong> porque<br/>
+      sin vos no tiene sentido.
+    </p>
+    <p class="firma">Siempre tuyo. 🌹</p>
+  </section>
+
+</div><!-- /main -->
+
+<script>
+/* ─── SCROLL BAR ─── */
+window.addEventListener('scroll', () => {
+  const d = document.documentElement;
+  document.getElementById('bar').style.width =
+    (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + '%';
+});
+
+/* ─── INTRO: OJOS DE PARTÍCULAS ─── */
+(function(){
+  const intro  = document.getElementById('intro');
+  const canvas = document.getElementById('eyeCanvas');
+  const ctx    = canvas.getContext('2d');
+  let W, H, pts = [], raf, phase = 'form', timer = 0;
+  let mx, my;
+
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    mx = W/2; my = H/2;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  document.addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY; });
+  document.addEventListener('touchmove', e=>{ mx=e.touches[0].clientX; my=e.touches[0].clientY; },{passive:true});
+
+  function eyeShape(cx,cy,rx,ry,n,col){
+    const arr=[];
+    for(let i=0;i<n;i++){
+      const t=(i/n)*Math.PI*2;
+      arr.push({ tx:cx+rx*Math.cos(t), ty:cy+ry*Math.sin(t)*Math.abs(Math.sin(t/2)), col });
+    }
+    return arr;
+  }
+  function circle(cx,cy,r,n,col){
+    const arr=[];
+    for(let i=0;i<n;i++){
+      const t=(i/n)*Math.PI*2;
+      arr.push({ tx:cx+r*Math.cos(t), ty:cy+r*Math.sin(t), col });
+    }
+    return arr;
+  }
+
+  function build(){
+    const cx=W/2, cy=H/2;
+    const isLandscape = W > H;
+    const gap = isLandscape ? W*0.15 : W*0.17;
+    const rx  = isLandscape ? W*0.11 : W*0.13;
+    const ry  = isLandscape ? H*0.09 : H*0.065;
+
+    const targets=[
+      ...eyeShape(cx-gap,cy,rx,ry,200,'#FF2D6A'),
+      ...eyeShape(cx+gap,cy,rx,ry,200,'#FF2D6A'),
+      ...circle(cx-gap,cy,rx*.48,130,'#FFD166'),
+      ...circle(cx+gap,cy,rx*.48,130,'#FFD166'),
+      ...circle(cx-gap,cy,rx*.2,70,'#ffffff'),
+      ...circle(cx+gap,cy,rx*.2,70,'#ffffff'),
+    ];
+    for(let i=0;i<50;i++){
+      const side = i<25?-1:1;
+      targets.push({ tx:cx+side*gap+(Math.random()-.5)*rx*.35, ty:cy+(Math.random()-.5)*ry*.4-ry*.25, col:'#fff' });
+    }
+
+    pts = targets.map(t=>({
+      x:Math.random()*W, y:Math.random()*H,
+      tx:t.tx, ty:t.ty, col:t.col,
+      sz:Math.random()*1.8+.4,
+      sp:.035+Math.random()*.04,
+      op:0,
+    }));
+  }
+  build();
+
+  function draw(){
+    raf = requestAnimationFrame(draw);
+    ctx.clearRect(0,0,W,H);
+
+    const g=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.75);
+    g.addColorStop(0,'rgba(8,0,18,1)');
+    g.addColorStop(1,'#000');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+    timer++;
+    if(phase==='form' && timer>110) phase='gaze';
+
+    const offX = phase==='gaze' ? (mx-W/2)*.018 : 0;
+    const offY = phase==='gaze' ? (my-H/2)*.018 : 0;
+
+    pts.forEach(p=>{
+      if(phase!=='dissolve'){
+        p.x += ((p.tx+offX)-p.x)*p.sp;
+        p.y += ((p.ty+offY)-p.y)*p.sp;
+        p.op = Math.min(1,p.op+.014);
+      } else {
+        p.x += (Math.random()-.5)*3;
+        p.y -= Math.random()*2.5+.5;
+        p.op -= .018;
+      }
+      if(p.op<=0) return;
+      ctx.globalAlpha = p.op;
+      ctx.fillStyle   = p.col;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.sz,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha=1;
+  }
+  draw();
+
+  function exit(){
+    phase='dissolve';
+    setTimeout(()=>{
+      intro.classList.add('fade-out');
+      cancelAnimationFrame(raf);
+      setTimeout(()=>{
+        intro.style.display='none';
+        document.getElementById('main').classList.add('show');
+        startHero();
+        startMiniEyes();
+        startHearts();
+        startTypewriter();
+        observeSections();
+      },1400);
+    },500);
+  }
+
+  intro.addEventListener('click', exit);
+  intro.addEventListener('touchend', e=>{e.preventDefault(); exit();},{passive:false});
+})();
+
+/* ─── HERO PARTÍCULAS ─── */
+function startHero(){
+  const c  = document.getElementById('heroCanvas');
+  const ctx = c.getContext('2d');
+  let W,H,dots=[];
+  function resize(){ W=c.width=c.offsetWidth; H=c.height=c.offsetHeight; }
+  resize();
+  window.addEventListener('resize',resize);
+  for(let i=0;i<60;i++) dots.push({x:Math.random()*1000,y:Math.random()*1000,r:Math.random()*1.2+.3,dx:(Math.random()-.5)*.3,dy:(Math.random()-.5)*.3,op:Math.random()*.5});
+  (function t(){
+    requestAnimationFrame(t);
+    ctx.clearRect(0,0,W,H);
+    dots.forEach(d=>{
+      d.x+=d.dx; d.y+=d.dy;
+      if(d.x<0||d.x>W)d.dx*=-1;
+      if(d.y<0||d.y>H)d.dy*=-1;
+      ctx.globalAlpha=d.op*.6; ctx.fillStyle='#FF2D6A';
+      ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+  })();
+}
+
+/* ─── MINI OJOS (sección dedicada) ─── */
+function startMiniEyes(){
+  const c   = document.getElementById('eyesMini');
+  const ctx  = c.getContext('2d');
+  let W,H,pts=[],mx,my,frame=0;
+
+  function resize(){
+    W=c.width=c.offsetWidth*devicePixelRatio; H=c.height=c.offsetHeight*devicePixelRatio;
+    c.style.width=c.offsetWidth+'px'; c.style.height=c.offsetHeight+'px';
+    mx=W/2; my=H/2;
+    buildMini();
+  }
+
+  function eyeS(cx,cy,rx,ry,n,col){
+    const a=[];
+    for(let i=0;i<n;i++){
+      const t=(i/n)*Math.PI*2;
+      a.push({tx:cx+rx*Math.cos(t), ty:cy+ry*Math.sin(t)*Math.abs(Math.sin(t/2)),col});
+    }
+    return a;
+  }
+  function circ(cx,cy,r,n,col){
+    const a=[];
+    for(let i=0;i<n;i++){const t=(i/n)*Math.PI*2; a.push({tx:cx+r*Math.cos(t),ty:cy+r*Math.sin(t),col});}
+    return a;
+  }
+
+  function buildMini(){
+    const cx=W/2,cy=H/2,gap=W*.22,rx=W*.17,ry=H*.32;
+    const tgts=[
+      ...eyeS(cx-gap,cy,rx,ry,120,'#FF2D6A'),
+      ...eyeS(cx+gap,cy,rx,ry,120,'#FF2D6A'),
+      ...circ(cx-gap,cy,rx*.47,80,'#FFD166'),
+      ...circ(cx+gap,cy,rx*.47,80,'#FFD166'),
+      ...circ(cx-gap,cy,rx*.2,45,'#fff'),
+      ...circ(cx+gap,cy,rx*.2,45,'#fff'),
+    ];
+    pts = tgts.map(t=>({x:Math.random()*W,y:Math.random()*H,tx:t.tx,ty:t.ty,col:t.col,sz:devicePixelRatio*.9,sp:.05,op:0}));
+  }
+
+  c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();mx=(e.clientX-r.left)*devicePixelRatio;my=(e.clientY-r.top)*devicePixelRatio;});
+  c.addEventListener('touchmove',e=>{const r=c.getBoundingClientRect();mx=(e.touches[0].clientX-r.left)*devicePixelRatio;my=(e.touches[0].clientY-r.top)*devicePixelRatio;},{passive:true});
+
+  resize();
+  window.addEventListener('resize',resize);
+
+  (function tick(){
+    requestAnimationFrame(tick);
+    frame++;
+    ctx.clearRect(0,0,W,H);
+
+    // fondo oscuro suave
+    ctx.fillStyle='rgba(8,0,18,0.95)'; ctx.fillRect(0,0,W,H);
+
+    const ox=(mx-W/2)*.025, oy=(my-H/2)*.025;
+    pts.forEach(p=>{
+      p.x+=(p.tx+ox-p.x)*p.sp;
+      p.y+=(p.ty+oy-p.y)*p.sp;
+      p.op=Math.min(1,p.op+.02);
+      ctx.globalAlpha=p.op;
+      ctx.fillStyle=p.col;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.sz,0,Math.PI*2); ctx.fill();
+    });
+
+    // Destello parpadeante en pupila
+    if(frame%120<15){
+      const cx=W/2,gap=W*.22,rx=W*.17;
+      [cx-gap,cx+gap].forEach(ex=>{
+        const grd=ctx.createRadialGradient(ex-rx*.08,W/2*.35-.05*H,0,ex,H/2,rx*.15);
+        grd.addColorStop(0,'rgba(255,255,255,0.6)');
+        grd.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.globalAlpha=Math.sin((frame%120)/15*Math.PI)*0.7;
+        ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+      });
+    }
+    ctx.globalAlpha=1;
+  })();
+}
+
+/* ─── CORAZONES ─── */
+function startHearts(){
+  const hero=document.getElementById('hero');
+  const em=['❤️','🌹','✨','💫','🌸','💕'];
+  setInterval(()=>{
+    const h=document.createElement('div');
+    h.className='heart-float';
+    h.textContent=em[Math.floor(Math.random()*em.length)];
+    h.style.left=Math.random()*88+6+'vw';
+    h.style.bottom='-5%';
+    const dur=7+Math.random()*5, del=Math.random();
+    h.style.animationDuration=dur+'s';
+    h.style.animationDelay=del+'s';
+    h.style.fontSize=(0.9+Math.random()*1.1)+'rem';
+    hero.appendChild(h);
+    setTimeout(()=>h.remove(),(dur+del+1)*1000);
+  },1100);
+}
+
+/* ─── TYPEWRITER ─── */
+function startTypewriter(){
+  const el=document.getElementById('tw-text');
+  const txt='"Antes de vos no sabía que era posible amar tan profundo. Gracias por esos ojos que me miran como si yo fuera suficiente."';
+  let i=0, started=false;
+
+  const obs=new IntersectionObserver(en=>{
+    if(en[0].isIntersecting && !started){
+      started=true; obs.disconnect();
+      (function type(){
+        if(i<=txt.length){
+          el.innerHTML=txt.slice(0,i)+'<span class="tw-cursor"></span>';
+          i++; setTimeout(type,40);
+        }
+      })();
+    }
+  },{threshold:0.4});
+  obs.observe(document.getElementById('quote-sec'));
+}
+
+/* ─── SCROLL REVEAL ─── */
+function observeSections(){
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); });
+  },{threshold:0.12});
+  document.querySelectorAll('.sec').forEach(s=>obs.observe(s));
+}
+
+/* ─── FOTO FAVORITA ─── */
+function loadFav(inp){
+  if(!inp.files||!inp.files[0]) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=document.getElementById('favImg');
+    img.src=e.target.result; img.style.display='block';
+    document.getElementById('favIcon').style.display='none';
+    document.getElementById('favHint').style.display='none';
+    document.getElementById('favBadge').style.display='block';
+    document.getElementById('favBox').classList.add('has-photo');
+  };
+  r.readAsDataURL(inp.files[0]);
+}
+
+/* ─── CARRUSEL ─── */
+(function(){
+  const track  = document.getElementById('carTrack');
+  const dots   = document.getElementById('carDots');
+  const countEl= document.getElementById('carCount');
+  const outer  = document.getElementById('carOuter');
+  const hint   = document.getElementById('swipeHint');
+  let slides=[], cur=0;
+  let slideW=0;
+
+  function getSlideW(){
+    const s=track.querySelector('.c-slide');
+    if(!s) return Math.min(220, window.innerWidth*0.62)+12;
+    return s.offsetWidth+12;
+  }
+
+  function renderDots(){
+    dots.innerHTML='';
+    slides.forEach((_,i)=>{
+      const d=document.createElement('div');
+      d.className='cdot'+(i===cur?' on':'');
+      d.onclick=()=>goTo(i);
+      dots.appendChild(d);
+    });
+  }
+
+  function goTo(i){
+    if(i<0) i=0;
+    if(i>=slides.length) i=slides.length-1;
+    cur=i;
+    slideW=getSlideW();
+    track.style.transform=`translateX(${-cur*slideW}px)`;
+    // highlight
+    track.querySelectorAll('.c-slide').forEach((s,j)=>{
+      s.classList.toggle('active-slide',j===cur);
+    });
+    renderDots();
+    countEl.textContent=slides.length+' foto'+(slides.length===1?'':'s');
+  }
+
+  // swipe táctil + mouse
+  let startX=0, dragging=false, startTranslate=0;
+
+  outer.addEventListener('touchstart',e=>{
+    startX=e.touches[0].clientX;
+    dragging=true;
+    startTranslate=-cur*getSlideW();
+    track.style.transition='none';
+  },{passive:true});
+
+  outer.addEventListener('touchmove',e=>{
+    if(!dragging) return;
+    const dx=e.touches[0].clientX-startX;
+    track.style.transform=`translateX(${startTranslate+dx}px)`;
+  },{passive:true});
+
+  outer.addEventListener('touchend',e=>{
+    if(!dragging) return;
+    dragging=false;
+    track.style.transition='transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)';
+    const dx=e.changedTouches[0].clientX-startX;
+    if(dx<-40) goTo(cur+1);
+    else if(dx>40) goTo(cur-1);
+    else goTo(cur);
+  });
+
+  // drag con mouse (desktop)
+  outer.addEventListener('mousedown',e=>{
+    startX=e.clientX; dragging=true;
+    startTranslate=-cur*getSlideW();
+    track.style.transition='none';
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!dragging) return;
+    const dx=e.clientX-startX;
+    track.style.transform=`translateX(${startTranslate+dx}px)`;
+  });
+  window.addEventListener('mouseup',e=>{
+    if(!dragging) return;
+    dragging=false;
+    track.style.transition='transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)';
+    const dx=e.clientX-startX;
+    if(dx<-40) goTo(cur+1);
+    else if(dx>40) goTo(cur-1);
+    else goTo(cur);
+  });
+
+  window.addPhotos=function(inp){
+    if(!inp.files||!inp.files.length) return;
+    const addSlot=document.getElementById('addSlot');
+    Array.from(inp.files).forEach(file=>{
+      const r=new FileReader();
+      r.onload=ev=>{
+        const slide=document.createElement('div');
+        slide.className='c-slide';
+        const img=document.createElement('img');
+        img.src=ev.target.result; img.alt='Foto nuestra';
+        slide.appendChild(img);
+        // insertar antes del slot de agregar
+        track.insertBefore(slide,addSlot);
+        slides.push(slide);
+        if(slides.length===1){ hint.style.display='block'; }
+        goTo(slides.length-1);
+      };
+      r.readAsDataURL(file);
+    });
+    inp.value='';
+  };
+})();
+</script>
+</body>
+</html>
