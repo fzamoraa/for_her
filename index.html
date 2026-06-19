@@ -45,7 +45,10 @@
     }
     #eyeCanvas { position:absolute; inset:0; width:100%; height:100%; }
     #intro-words {
-      position: relative;
+      position: absolute;
+      bottom: 15%; /* Esto baja el texto para que no tape el dibujo */
+      left: 0;
+      width: 100%;
       z-index: 10;
       text-align: center;
       pointer-events: none;
@@ -996,113 +999,78 @@ function loadFav(inp){
 }
 
 /* ─── CARRUSEL ─── */
+/* ─── CARRUSEL CORREGIDO ─── */
 (function(){
   const track  = document.getElementById('carTrack');
   const dots   = document.getElementById('carDots');
   const countEl= document.getElementById('carCount');
   const outer  = document.getElementById('carOuter');
-  const hint   = document.getElementById('swipeHint');
-  let slides=[], cur=0;
-  let slideW=0;
+  
+  // FIX: Leemos las imágenes que ya están en tu HTML desde el principio
+  let slides = Array.from(track.querySelectorAll('.c-slide'));
+  let cur = 0;
+  let slideW = 0;
 
   function getSlideW(){
-    const s=track.querySelector('.c-slide');
-    if(!s) return Math.min(220, window.innerWidth*0.62)+12;
-    return s.offsetWidth+12;
+    const s = track.querySelector('.c-slide');
+    if(!s) return Math.min(220, window.innerWidth*0.62) + 12;
+    return s.offsetWidth + 12;
   }
 
   function renderDots(){
-    dots.innerHTML='';
-    slides.forEach((_,i)=>{
-      const d=document.createElement('div');
-      d.className='cdot'+(i===cur?' on':'');
-      d.onclick=()=>goTo(i);
+    if (!dots) return;
+    dots.innerHTML = '';
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'cdot' + (i === cur ? ' on' : '');
+      d.onclick = () => goTo(i);
       dots.appendChild(d);
     });
   }
 
   function goTo(i){
-    if(i<0) i=0;
-    if(i>=slides.length) i=slides.length-1;
-    cur=i;
-    slideW=getSlideW();
-    track.style.transform=`translateX(${-cur*slideW}px)`;
-    // highlight
-    track.querySelectorAll('.c-slide').forEach((s,j)=>{
-      s.classList.toggle('active-slide',j===cur);
+    if(slides.length === 0) return;
+    if(i < 0) i = 0;
+    if(i >= slides.length) i = slides.length - 1;
+    cur = i;
+    slideW = getSlideW();
+    track.style.transform = `translateX(${-cur * slideW}px)`;
+    slides.forEach((s, j) => {
+      s.classList.toggle('active-slide', j === cur);
     });
     renderDots();
-    countEl.textContent=slides.length+' foto'+(slides.length===1?'':'s');
+    if(countEl) countEl.textContent = slides.length + ' foto' + (slides.length === 1 ? '' : 's');
   }
 
-  // swipe táctil + mouse
-  let startX=0, dragging=false, startTranslate=0;
+  // Lógica táctil
+  let startX = 0, dragging = false, startTranslate = 0;
 
-  outer.addEventListener('touchstart',e=>{
-    startX=e.touches[0].clientX;
-    dragging=true;
-    startTranslate=-cur*getSlideW();
-    track.style.transition='none';
-  },{passive:true});
+  outer.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    dragging = true;
+    slideW = getSlideW(); // Recalcular tamaño en móvil
+    startTranslate = -cur * slideW;
+    track.style.transition = 'none';
+  }, {passive: true});
 
-  outer.addEventListener('touchmove',e=>{
+  outer.addEventListener('touchmove', e => {
     if(!dragging) return;
-    const dx=e.touches[0].clientX-startX;
-    track.style.transform=`translateX(${startTranslate+dx}px)`;
-  },{passive:true});
+    const dx = e.touches[0].clientX - startX;
+    track.style.transform = `translateX(${startTranslate + dx}px)`;
+  }, {passive: true});
 
-  outer.addEventListener('touchend',e=>{
+  outer.addEventListener('touchend', e => {
     if(!dragging) return;
-    dragging=false;
-    track.style.transition='transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)';
-    const dx=e.changedTouches[0].clientX-startX;
-    if(dx<-40) goTo(cur+1);
-    else if(dx>40) goTo(cur-1);
+    dragging = false;
+    track.style.transition = 'transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)';
+    const dx = e.changedTouches[0].clientX - startX;
+    if(dx < -40) goTo(cur + 1);
+    else if(dx > 40) goTo(cur - 1);
     else goTo(cur);
   });
 
-  // drag con mouse (desktop)
-  outer.addEventListener('mousedown',e=>{
-    startX=e.clientX; dragging=true;
-    startTranslate=-cur*getSlideW();
-    track.style.transition='none';
-  });
-  window.addEventListener('mousemove',e=>{
-    if(!dragging) return;
-    const dx=e.clientX-startX;
-    track.style.transform=`translateX(${startTranslate+dx}px)`;
-  });
-  window.addEventListener('mouseup',e=>{
-    if(!dragging) return;
-    dragging=false;
-    track.style.transition='transform 0.38s cubic-bezier(0.25,0.46,0.45,0.94)';
-    const dx=e.clientX-startX;
-    if(dx<-40) goTo(cur+1);
-    else if(dx>40) goTo(cur-1);
-    else goTo(cur);
-  });
-
-  window.addPhotos=function(inp){
-    if(!inp.files||!inp.files.length) return;
-    const addSlot=document.getElementById('addSlot');
-    Array.from(inp.files).forEach(file=>{
-      const r=new FileReader();
-      r.onload=ev=>{
-        const slide=document.createElement('div');
-        slide.className='c-slide';
-        const img=document.createElement('img');
-        img.src=ev.target.result; img.alt='Foto nuestra';
-        slide.appendChild(img);
-        // insertar antes del slot de agregar
-        track.insertBefore(slide,addSlot);
-        slides.push(slide);
-        if(slides.length===1){ hint.style.display='block'; }
-        goTo(slides.length-1);
-      };
-      r.readAsDataURL(file);
-    });
-    inp.value='';
-  };
+  // Inicializar carrusel
+  setTimeout(() => { goTo(0); }, 150);
 })();
 </script>
 </body>
